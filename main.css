@@ -1,0 +1,16 @@
+html {
+  -webkit-app-region: drag;
+  user-select: none;
+}
+body {
+      background: black;
+      color: white;
+      font-family: 'arial';
+      text-align: center;
+      vertical-align: middle;
+      margin-top: 50px;
+    }
+.stockValue {
+  font-size: 30px;
+}
+

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="main.css">
+  </head>
+
+  <body>
+    <h3>Current share price of GOOG: </h3>
+    <div class="stockValue" id="stockValue">Loading...</div> <!-- Display stock current value -->
+      <p>
+        <hr>
+      </p>
+    <h3>Variance:</h3>
+    <div class="up-down" id="varienceHistory"></div> <!-- Display varience symbol -->
+    <script>
+      var request = require('request');
+      setInterval (function(){
+        request("https://www.google.com/finance/info?client=ig&q=goog", function(error, response, body) {
+          body = body.slice(3); // Removes '// '
+          body = JSON.parse(body); // Parses the JSON info
+          console.log(body);
+          newPrice(body); // Place the current stock value in the app
+          varienceSymbol(body); // Place the current stock value in the app
+        });
+      }, 1000); // Update per 1 second
+
+      var lastPrice; // Hold the previous value of the stock
+      var currentPrice;
+
+      function newPrice(arr) { // Logic for stock values
+        currentPrice = arr[0]["l"]; // Get the current price of stock
+        document.getElementById("stockValue").innerHTML = currentPrice; // Placed inside the if so there is no delay between the two element updates
+      }
+
+      function varienceSymbol(){
+        var history = document.getElementById("varienceHistory"); // Holds the span that holds the varience icons
+        var wrap = document.createElement("span"); // Holds the varience icons
+
+        if (lastPrice > currentPrice){ // decrease
+          var varianceSymb = document.createTextNode("▼ ");
+          wrap.className="down"; // change
+        } else if (lastPrice < currentPrice) { // increase
+          var varianceSymb = document.createTextNode("▲ ");
+          document.getElementById("stockValue").innerHTML = currentPrice; // ''
+          wrap.className="up";
+        } else if (lastPrice == currentPrice) { // no change
+          var varianceSymb = document.createTextNode("▬ ");
+          document.getElementById("stockValue").innerHTML = currentPrice; // ''
+          wrap.className = "noChange";
+        } else { // if lastPrice has no value
+          var varianceSymb = document.createTextNode("N/A ");
+          document.getElementById("stockValue").innerHTML = currentPrice; // ''
+          wrap.className = "null"; 
+        }
+      
+        wrap.appendChild(varianceSymb); // Insert varience icon into the span element 
+        history.appendChild(wrap); // Insert the varience span into the div element
+        
+        var varSymbLen = history.getElementsByTagName("SPAN").length; // Gets length of varience symbol span element
+
+        if(varSymbLen == 6) { // If length is 6 
+          history.children[0].remove(); // remove the olders icon
+        }
+        lastPrice = currentPrice;
+      }
+        
+    </script>
+  </body>
+</html>
